@@ -9,16 +9,18 @@
  *     ListNode(int x, ListNode *next) : val(x), next(next) {}
  * };
  */
-#include <cmath>
+
+#include <iostream>
 #include <algorithm>
 class Solution {
 public:
     ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-        ListNode *next = nullptr,*carry = nullptr, *cur = nullptr;
+        ListNode *ret = nullptr, *cur = nullptr;
         ListNode *l1_mark = l1;
         ListNode *l2_mark = l2;
         int sum, count, max_cnt; 
         int l1_cnt = 0, l2_cnt = 0;
+
         while (l1_mark->next != nullptr) {
             l1_cnt++;
             l1_mark = l1_mark->next;
@@ -27,8 +29,10 @@ public:
             l2_cnt++;
             l2_mark = l2_mark->next;
         }
+
         count = 0;
         max_cnt = std::max(l1_cnt,l2_cnt);
+        cout << "Max Cnt: " << max_cnt << endl;
         while (count<=max_cnt) {
             sum = 0;
             if (l1_cnt >= count) {
@@ -40,20 +44,26 @@ public:
                 l2 = l2->next;
             }
             count++;
-            
-            cur = new ListNode(sum,next);
-            // Recursively carry any value greater than 9*10^0
-            carry = cur;
-            while(carry->val >= 10) {
-                if (carry->next == nullptr) {
-                    carry->next = new ListNode();
-                }
-                carry->next->val = carry->next->val + 1;
-                carry->val = (carry->val)%10;
-                carry = carry->next;
+            if (cur == nullptr) {
+                cur = new ListNode();
             }
-            next = cur;
+            cur->val = cur->val+sum;
+             cout << "Current: " << cur->val << endl;
+            if (cur->val >= 10) {
+                if (cur->next == nullptr) {
+                    cur->next = new ListNode();
+                }
+                cur->next->val = cur->next->val + 1;
+                cur->val = (cur->val)%10;
+            }
+            if (count == 1) {
+                ret = cur;
+            }
+            if (cur->next == nullptr && count<=max_cnt) {
+                cur->next = new ListNode();
+            }
+            cur = cur->next;
         }   
-        return cur;
+        return ret;
     }
 };
